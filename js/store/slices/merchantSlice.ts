@@ -1,5 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { IClientProps } from "../../lib/api/auth";
+import { StudioSessionProps } from "./../../lib/api/studioSessions";
 
 const merchantSlice = createSlice({
   name: "studio",
@@ -7,10 +8,14 @@ const merchantSlice = createSlice({
     isLoading: false,
     isSearching: false,
     studio: {} as IClientProps,
+    sessions: [] as StudioSessionProps[],
   },
   reducers: {
-    fetchStudios: (state, action) => {
+    updateStudios: (state, action) => {
       state.studio = action.payload;
+    },
+    updateSessions: (state, action) => {
+      state.sessions = action.payload;
     },
     updateLoadingState: (state, action) => {
       state.isLoading = action.payload;
@@ -21,7 +26,11 @@ const merchantSlice = createSlice({
   },
 });
 
-export const { fetchStudios, updateLoadingState, updateSearchingState } =
-  merchantSlice.actions;
+export const {
+  updateStudios,
+  updateSessions,
+  updateLoadingState,
+  updateSearchingState,
+} = merchantSlice.actions;
 
 export default merchantSlice.reducer;

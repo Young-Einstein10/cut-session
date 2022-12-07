@@ -1,10 +1,8 @@
-import Component from "../lib/component.js";
-// import store from "../store/index.js";
+import Component from "../../lib/component.js";
 
 export default class Register extends Component {
   constructor() {
     super({
-      //   store,
       element: document.getElementById("app") as HTMLElement,
     });
   }
@@ -17,17 +15,7 @@ export default class Register extends Component {
     console.log("Logged immediately component mounts");
   }
 
-  /**
-   * React to state changes and render the component's HTML
-   *
-   * @returns {void}
-   */
   render() {
-    // let suffix = store.state.items.length !== 1 ? "s" : "";
-    // let emoji = store.state.items.length > 0 ? "🙌" : "😢";
-
-    this.methods();
-
     this.element!.innerHTML = `
     <!-- --------------- LOGIN SECTION START --------------- -->
     <section class="register__section">
@@ -114,7 +102,8 @@ export default class Register extends Component {
       </div>
     </section>
     <!-- --------------- LOGIN SECTION END --------------- -->
-  
     `;
+
+    this.methods();
   }
 }

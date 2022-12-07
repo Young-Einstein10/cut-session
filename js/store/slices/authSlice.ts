@@ -15,13 +15,13 @@ const authSlice = createSlice({
       state.isAuthenticated = false;
       state.token = "";
     },
-    updateLoadingState: (state, action) => {
+    updateAuthLoadingState: (state, action) => {
       state.isLoading = action.payload;
     },
   },
 });
 
-export const { updateCredentials, resetCredentials, updateLoadingState } =
+export const { updateCredentials, resetCredentials, updateAuthLoadingState } =
   authSlice.actions;
 
 export default authSlice.reducer;

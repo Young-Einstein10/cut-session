@@ -3,11 +3,11 @@ import * as templates from "../templates";
 
 console.log(templates);
 
-// declare global {
-//   interface Window {
-//     route: (event: Event) => void;
-//   }
-// }
+declare global {
+  interface Window {
+    route: (event: Event) => void;
+  }
+}
 
 const route = (event) => {
   event = event || window.event; // get window.event if event argument not provided
@@ -45,7 +45,7 @@ const locationHandler = async () => {
   // console.log("====================================");
 
   // set the content of the content div to the html
-  document.getElementById("app").innerHTML = html;
+  // document.getElementById("app").innerHTML = html;
   // set the title of the document to the title of the route
   // document.title = route.title;
   // // set the description of the document to the description of the route

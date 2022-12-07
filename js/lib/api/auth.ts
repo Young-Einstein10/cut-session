@@ -25,7 +25,7 @@ export type RegisterMerchantPayload = Omit<
   cityOfOperation: string;
 };
 
-export type StudioProps = {
+export type UserProps = {
   merchantId?: string;
   userId?: string;
   name: string;
@@ -38,7 +38,7 @@ export interface IClientProps {
   count: number;
   next: string;
   previous: string;
-  data: StudioProps[];
+  data: UserProps[];
 }
 
 class Auth {

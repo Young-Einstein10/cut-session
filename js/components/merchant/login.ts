@@ -1,14 +1,14 @@
-import { LoginPayload } from "../lib/api/auth.js";
-import api from "../lib/api/index.js";
-import Component from "../lib/component.js";
-import store from "../store/index.js";
+import { LoginPayload } from "../../lib/api/auth.js";
+import api from "../../lib/api/index.js";
+import Component from "../../lib/component.js";
+import store from "../../store/index.js";
 import {
   updateCredentials,
-  updateLoadingState,
-} from "../store/slices/authSlice.js";
-import { $, $ID, routeTo } from "../utils/helpers.js";
-import { getObjectKeys, validateForm } from "../validations/helpers.js";
-import { loginSchema } from "../validations/schemas/index.js";
+  updateAuthLoadingState,
+} from "../../store/slices/authSlice.js";
+import { $, $ID, routeTo } from "../../utils/helpers.js";
+import { getObjectKeys, validateForm } from "../../validations/helpers.js";
+import { loginSchema } from "../../validations/schemas/index.js";
 
 export default class Login extends Component {
   constructor() {
@@ -31,7 +31,7 @@ export default class Login extends Component {
       const payload: LoginPayload = {
         username: usernameField!.value,
         password: passwordField!.value,
-        accessType: "USER",
+        accessType: "MERCHANT",
       };
 
       // Validate Input Fields
@@ -46,20 +46,22 @@ export default class Login extends Component {
       // this.isFieldsTouched = true;
       // console.log(payload);
 
-      store.dispatch(updateLoadingState(true));
+      store.dispatch(updateAuthLoadingState(true));
 
       const response = await api.auth.login(payload);
 
       console.log(response);
 
-      store.dispatch(updateLoadingState(false));
+      store.dispatch(updateAuthLoadingState(false));
       store.dispatch(
         updateCredentials({ isAuthenticated: true, token: response.data.token })
       );
 
-      routeTo("user-dashboard");
+      localStorage.setItem("token", response.data.token);
+
+      routeTo("dashboard");
     } catch (error) {
-      store.dispatch(updateLoadingState(false));
+      store.dispatch(updateAuthLoadingState(false));
       console.log(error);
     }
   }
@@ -90,24 +92,24 @@ export default class Login extends Component {
                 <div class="mt-3">
                     <label class="block font-semibold">Username</label>
                     <input
-                    type="text"
-                    name="username"
-                    data-username="username"
-                    placeholder="Username"
-                    class="border w-full h-5 px-3 py-5 mt-2 hover:outline-none focus:outline-none focus:ring-indigo-500 focus:ring-1 rounded-md"
-                    required
+                      type="text"
+                      name="username"
+                      data-username="username"
+                      placeholder="Username"
+                      class="border w-full h-5 px-3 py-5 mt-2 hover:outline-none focus:outline-none focus:ring-indigo-500 focus:ring-1 rounded-md"
+                      required
                     />
                 </div>
     
                 <div class="mt-3">
                     <label class="block font-semibold">Password</label>
                     <input
-                    type="password"
-                    name="password"
-                    data-password="password"
-                    placeholder="Password"
-                    class="border w-full h-5 px-3 py-5 mt-2 hover:outline-none focus:outline-none focus:ring-indigo-500 focus:ring-1 rounded-md"
-                    required
+                      type="password"
+                      name="password"
+                      data-password="password"
+                      placeholder="Password"
+                      class="border w-full h-5 px-3 py-5 mt-2 hover:outline-none focus:outline-none focus:ring-indigo-500 focus:ring-1 rounded-md"
+                      required
                     />
                 </div>
     

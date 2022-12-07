@@ -1,11 +1,11 @@
-import { IClientProps, StudioProps } from "../lib/api/auth";
-import Component from "../lib/component";
-import store from "../store";
+import { IClientProps, UserProps } from "../../lib/api/auth";
+import Component from "../../lib/component";
+import store from "../../store";
 import {
   handleFetchMerchants,
   handleSearchMerchants,
-} from "../utils/functions";
-import { $ } from "../utils/helpers.js";
+} from "../../utils/functions";
+import { $, $ID, checkAuthentication, logOut } from "../../utils/helpers.js";
 
 export default class UserDashboard extends Component {
   constructor() {
@@ -13,6 +13,7 @@ export default class UserDashboard extends Component {
       element: document.getElementById("app") as HTMLElement,
     });
 
+    checkAuthentication();
     handleFetchMerchants();
   }
 
@@ -31,8 +32,14 @@ export default class UserDashboard extends Component {
     });
   }
 
+  handleLogout() {
+    const logoutBtn = $ID("logout-btn") as HTMLButtonElement;
+    logoutBtn.addEventListener("click", logOut);
+  }
+
   methods() {
     this.handleStudioSearch();
+    this.handleLogout();
   }
 
   loadingTemplate() {
@@ -45,7 +52,7 @@ export default class UserDashboard extends Component {
     `;
   }
 
-  studioItemTemplate(studio: StudioProps) {
+  studioItemTemplate(studio: UserProps) {
     return `
       <!-- STUDIO ITEM START -->
       <div class="p-6 shadow-md rounded-xl mb-8">
@@ -106,7 +113,10 @@ export default class UserDashboard extends Component {
         </div>
       `
         : `<div class="studio__list mt-2">
-      ${studios.map((studio) => this.studioItemTemplate(studio)).toString()}
+      ${studios
+        .map((studio) => this.studioItemTemplate(studio))
+        .join("")
+        .toString()}
       </div>`
     }
   </main>
