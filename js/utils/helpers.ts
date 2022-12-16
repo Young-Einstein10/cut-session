@@ -1,6 +1,9 @@
+import { navigateTo } from "../router";
 import { resetCredentials } from "../store/slices/authSlice";
 
 export const $ = (elemSelector: string) => document.querySelector(elemSelector);
+export const $ll = (elemSelector: string) =>
+  document.querySelectorAll(elemSelector);
 export const $ID = (id: string) => document.getElementById(id);
 
 // For Routing
@@ -11,12 +14,12 @@ export const checkAuthentication = () => {
 
   // Redirect user to login
   if (!token) {
-    return routeTo("login");
+    return navigateTo("login");
   }
 };
 
-export const logOut = () => {
+export const logOut = (from: "user" | "merchant") => {
   resetCredentials();
-  localStorage.removeItem("token");
-  routeTo("login");
+  localStorage.clear();
+  return navigateTo(`/${from}/login`);
 };

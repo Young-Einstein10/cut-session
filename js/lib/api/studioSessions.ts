@@ -24,7 +24,15 @@ export interface BookingPayload {
   title: string;
 }
 
-interface SessionBookingResponse {
+export interface GetBookingPayload {
+  merchant: string;
+  city?: string;
+  limit?: number;
+  offset?: number;
+  period?: string;
+}
+
+export interface SessionBookingResponse {
   count: number;
   next: string;
   previous: string;
@@ -64,8 +72,12 @@ class StudioSession {
     return this.client.post<BookingPayload, BookingResponse>("/bookings", body);
   }
 
-  fetchSessionBookings() {
-    return this.client.get<SessionBookingResponse>("/bookings");
+  fetchSessionBookings(payload: GetBookingPayload) {
+    const { limit = 20, offset = 1, city = " ", merchant, period } = payload;
+
+    return this.client.get<SessionBookingResponse>(
+      `/bookings?limit=${limit}&offset=${offset}&city=${city}&period=${period}&merchant=${merchant}`
+    );
   }
 }
 

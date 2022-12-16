@@ -1,6 +1,9 @@
+import { isAxiosError } from "axios";
 import { LoginPayload } from "../../lib/api/auth.js";
 import api from "../../lib/api/index.js";
 import Component from "../../lib/component.js";
+import { notifyError, notifySuccess } from "../../lib/toast.js";
+import { navigateTo } from "../../router/index.js";
 import store from "../../store/index.js";
 import {
   updateCredentials,
@@ -9,11 +12,13 @@ import {
 import { $, $ID, routeTo } from "../../utils/helpers.js";
 import { getObjectKeys, validateForm } from "../../validations/helpers.js";
 import { loginSchema } from "../../validations/schemas/index.js";
+import { Params } from "./dashboard.js";
 
 export default class Login extends Component {
-  constructor() {
+  constructor(params: Params) {
     super({
-      element: document.getElementById("app") as HTMLElement,
+      element: $ID("app") as HTMLElement,
+      params,
     });
   }
 
@@ -58,11 +63,18 @@ export default class Login extends Component {
       );
 
       localStorage.setItem("token", response.data.token);
+      localStorage.setItem("merchantId", response.data.merchantId);
 
-      routeTo("dashboard");
+      notifySuccess("Logged In Successfully.");
+
+      navigateTo("dashboard");
     } catch (error) {
       store.dispatch(updateAuthLoadingState(false));
       console.log(error);
+
+      if (isAxiosError(error)) {
+        notifyError(error.response?.data.message || "An error occurred");
+      }
     }
   }
 

@@ -1,19 +1,20 @@
 import { LoginPayload } from "../../lib/api/auth.js";
 import api from "../../lib/api/index.js";
 import Component from "../../lib/component.js";
+import { navigateTo } from "../../router/index.js";
 import store from "../../store/index.js";
 import {
   updateCredentials,
   updateAuthLoadingState,
 } from "../../store/slices/authSlice.js";
-import { $, $ID, routeTo } from "../../utils/helpers.js";
-import { getObjectKeys, validateForm } from "../../validations/helpers.js";
-import { loginSchema } from "../../validations/schemas/index.js";
+import { $, $ID } from "../../utils/helpers.js";
+import { isAxiosError } from "axios";
+import { notifyError, notifySuccess } from "../../lib/toast.js";
 
 export default class Login extends Component {
   constructor() {
     super({
-      element: document.getElementById("app") as HTMLElement,
+      element: $ID("app") as HTMLElement,
     });
   }
 
@@ -58,11 +59,18 @@ export default class Login extends Component {
       );
 
       localStorage.setItem("token", response.data.token);
+      localStorage.setItem("userId", response.data.userId);
 
-      routeTo("dashboard");
+      notifySuccess("Logged In Successfully.");
+
+      navigateTo("dashboard");
     } catch (error) {
       store.dispatch(updateAuthLoadingState(false));
       console.log(error);
+
+      if (isAxiosError(error)) {
+        notifyError(error.response?.data.message || "An error occurred");
+      }
     }
   }
 
@@ -92,24 +100,24 @@ export default class Login extends Component {
                 <div class="mt-3">
                     <label class="block font-semibold">Username</label>
                     <input
-                    type="text"
-                    name="username"
-                    data-username="username"
-                    placeholder="Username"
-                    class="border w-full h-5 px-3 py-5 mt-2 hover:outline-none focus:outline-none focus:ring-indigo-500 focus:ring-1 rounded-md"
-                    required
+                      type="text"
+                      name="username"
+                      data-username="username"
+                      placeholder="Username"
+                      class="border w-full h-5 px-3 py-5 mt-2 hover:outline-none focus:outline-none focus:ring-indigo-500 focus:ring-1 rounded-md"
+                      required
                     />
                 </div>
     
                 <div class="mt-3">
                     <label class="block font-semibold">Password</label>
                     <input
-                    type="password"
-                    name="password"
-                    data-password="password"
-                    placeholder="Password"
-                    class="border w-full h-5 px-3 py-5 mt-2 hover:outline-none focus:outline-none focus:ring-indigo-500 focus:ring-1 rounded-md"
-                    required
+                      type="password"
+                      name="password"
+                      data-password="password"
+                      placeholder="Password"
+                      class="border w-full h-5 px-3 py-5 mt-2 hover:outline-none focus:outline-none focus:ring-indigo-500 focus:ring-1 rounded-md"
+                      required
                     />
                 </div>
     

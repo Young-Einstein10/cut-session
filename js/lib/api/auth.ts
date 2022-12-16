@@ -49,7 +49,11 @@ class Auth {
   }
 
   login(userDetails: LoginPayload) {
-    return this.client.post<{ token: string }>("/sign-in", userDetails);
+    return this.client.post<{
+      token: string;
+      userId: string;
+      merchantId: string;
+    }>("/sign-in", userDetails);
   }
 
   registerMerchant(body: RegisterMerchantPayload) {
@@ -63,15 +67,15 @@ class Auth {
     return this.client.post<{ userId: string }>("/register/users", body);
   }
 
-  fetchUsers(limit = 20, offset = 1) {
+  fetchUsers(limit = 20, offset = 1, city?: string, name?: string) {
     return this.client.get<IClientProps>(
-      `/clients?type=USER&limit=${limit}&offset=${offset}`
+      `/clients?type=USER&limit=${limit}&offset=${offset}&city=${city}&name=${name}`
     );
   }
 
-  fetchMerchants(limit = 20, offset = 1) {
+  fetchMerchants(limit = 20, offset = 1, city?: string, name?: string) {
     return this.client.get<IClientProps>(
-      `/clients?type=MERCHANT&limit=${limit}&offset=${offset}`
+      `/clients?type=MERCHANT&limit=${limit}&offset=${offset}&city=${city}&name=${name}`
     );
   }
 

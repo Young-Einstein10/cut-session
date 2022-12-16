@@ -1,10 +1,12 @@
 import api from "../lib/api";
+import { GetBookingPayload } from "../lib/api/studioSessions";
 import store from "../store";
 import {
   updateStudios,
   updateSessions,
   updateLoadingState,
   updateSearchingState,
+  updateBookings,
 } from "../store/slices/merchantSlice";
 
 export async function handleFetchSessions(merchantId: string) {
@@ -23,6 +25,22 @@ export async function handleFetchSessions(merchantId: string) {
   }
 }
 
+export async function handleFetchBookings(payload: GetBookingPayload) {
+  try {
+    store.dispatch(updateLoadingState(true));
+
+    const response = await api.studioSession.fetchSessionBookings(payload);
+
+    console.log(response);
+
+    store.dispatch(updateLoadingState(false));
+    store.dispatch(updateBookings(response.data));
+  } catch (error) {
+    store.dispatch(updateLoadingState(false));
+    console.log(error);
+  }
+}
+
 export async function handleFetchMerchants() {
   try {
     store.dispatch(updateLoadingState(true));
@@ -33,8 +51,6 @@ export async function handleFetchMerchants() {
 
     store.dispatch(updateLoadingState(false));
     store.dispatch(updateStudios(response.data));
-
-    return response.data;
   } catch (error) {
     store.dispatch(updateLoadingState(false));
     console.log(error);

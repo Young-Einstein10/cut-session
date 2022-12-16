@@ -1,13 +1,16 @@
 import api from "../../lib/api/index.js";
 import Component from "../../lib/component.js";
+import { navigateTo } from "../../router/index.js";
 import store from "../../store/index.js";
 import { updateAuthLoadingState } from "../../store/slices/authSlice.js";
 import { $, $ID, routeTo } from "../../utils/helpers.js";
+import { Params } from "../merchant/dashboard.js";
 
 export default class Register extends Component {
-  constructor() {
+  constructor(params: Params) {
     super({
       element: $ID("app") as HTMLElement,
+      params,
     });
   }
 
@@ -118,7 +121,7 @@ export default class Register extends Component {
 
       store.dispatch(updateAuthLoadingState(false));
 
-      routeTo("login");
+      navigateTo("login");
     } catch (error) {
       store.dispatch(updateAuthLoadingState(false));
       console.log(error);

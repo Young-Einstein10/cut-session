@@ -1,24 +1,26 @@
 import { StudioSessionProps } from "../../lib/api/studioSessions";
 import Component from "../../lib/component";
+import { navigateTo } from "../../router";
 import store from "../../store";
-import {
-  handleFetchMerchants,
-  handleFetchSessions,
-} from "../../utils/functions";
+import { handleFetchSessions } from "../../utils/functions";
 import { $ID, checkAuthentication, logOut, routeTo } from "../../utils/helpers";
 
+export type Params = { [k: string]: string };
+
 export default class MerchantDashboard extends Component {
-  constructor() {
+  constructor(params: Params) {
     super({
       element: $ID("app") as HTMLElement,
+      params,
     });
 
     checkAuthentication();
-    // handleFetchMerchants().then(resp => {
-    //   const merchantId = resp?.data.find(user => user.merchantId)
-    // })
 
-    handleFetchSessions("6f5e6405-bbec-465e-ac98-144889426e37");
+    const merchantId =
+      "6f5e6405-bbec-465e-ac98-144889426e37" ||
+      localStorage.getItem("merchantId");
+
+    handleFetchSessions(merchantId as string);
   }
 
   renderTableHeaders() {
@@ -65,17 +67,26 @@ export default class MerchantDashboard extends Component {
   handleCreateSession() {
     const createSessionBtn = $ID("create-session") as HTMLButtonElement;
     createSessionBtn.addEventListener("click", () => {
-      routeTo("create");
+      navigateTo("create");
     });
+  }
+
+  handleUserBookingsRoute() {
+    const userBookingsBtn = $ID("all-bookings") as HTMLButtonElement;
+
+    userBookingsBtn.addEventListener("click", (e) =>
+      navigateTo(`${location.pathname}/bookings`)
+    );
   }
 
   handleLogout() {
     const logoutBtn = $ID("logout-btn") as HTMLButtonElement;
-    logoutBtn.addEventListener("click", logOut);
+    logoutBtn.addEventListener("click", () => logOut("merchant"));
   }
 
   methods() {
     this.handleCreateSession();
+    this.handleUserBookingsRoute();
     this.handleLogout();
   }
 
@@ -90,7 +101,11 @@ export default class MerchantDashboard extends Component {
       <header class="h-16 flex items-center border-b border-slate-800 px-4">
         <nav class="flex justify-between items-center max-w-4xl w-full mx-auto">
           <p class="text-2xl font-bold">CutSession</p>
-          <button id="logout-btn" class="hover:underline">Log Out</button>
+
+          <div class="flex items-center">
+            <button id="all-bookings" class="hover:underline mr-4">Bookings</button>
+            <button id="logout-btn" class="hover:underline">Log Out</button>
+          </div>
         </nav>
       </header>
     

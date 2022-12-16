@@ -1,9 +1,12 @@
 import Component from "../../lib/component.js";
+import { $ID } from "../../utils/helpers.js";
+import { Params } from "./dashboard.js";
 
 export default class Register extends Component {
-  constructor() {
+  constructor(params: Params) {
     super({
-      element: document.getElementById("app") as HTMLElement,
+      element: $ID("app") as HTMLElement,
+      params,
     });
   }
 
