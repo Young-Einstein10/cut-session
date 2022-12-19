@@ -12,6 +12,3 @@ const store = configureStore({
 });
 
 export default store;
-
-// Can still subscribe to the store
-// store.subscribe(() => console.log(store.getState().count.value));

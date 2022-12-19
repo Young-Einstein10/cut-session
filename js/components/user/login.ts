@@ -93,8 +93,8 @@ export default class Login extends Component {
             class="relative flex min-h-screen text-gray-800 antialiased flex-col justify-center overflow-hidden bg-gray-50 py-6 sm:py-12"
         >
             <form id="login-form" class="relative py-3 sm:w-96 mx-auto text-center">
-            <span class="text-3xl font-medium">Login</span>
-            <div class="mt-4 bg-white shadow-md rounded-lg text-left">
+            <span class="text-3xl font-medium">User Login</span>
+            <div class="mt-6 bg-white shadow-md rounded-lg text-left">
                 <div class="h-2 bg-slate-700 rounded-t-md"></div>
                 <div class="px-8 py-6">
                 <div class="mt-3">
@@ -130,6 +130,10 @@ export default class Login extends Component {
                 </div>
             </div>
             </form>
+
+            <p class="text-center">
+              Are you a Merchant? <a href="/merchant/login" class="hover:underline" data-link>Log In here</a>
+            </p>
         </div>
         </section>
         <!-- --------------- LOGIN SECTION END --------------- -->

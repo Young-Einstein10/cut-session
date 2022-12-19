@@ -86,7 +86,7 @@ export default class MerchantDashboard extends Component {
 
   methods() {
     this.handleCreateSession();
-    this.handleUserBookingsRoute();
+    // this.handleUserBookingsRoute();
     this.handleLogout();
   }
 
@@ -97,13 +97,14 @@ export default class MerchantDashboard extends Component {
     this.element!.innerHTML = `
     <!-- --------------- DASHBOARD SECTION START --------------- -->
     <section class="dashboard__section">
-      <!-- NAVBAR -->
       <header class="h-16 flex items-center border-b border-slate-800 px-4">
         <nav class="flex justify-between items-center max-w-4xl w-full mx-auto">
           <p class="text-2xl font-bold">CutSession</p>
 
           <div class="flex items-center">
-            <button id="all-bookings" class="hover:underline mr-4">Bookings</button>
+            <button class="hover:underline mr-4">
+              <a href="${location.pathname}/bookings" data-link>Bookings</a>
+            </button>
             <button id="logout-btn" class="hover:underline">Log Out</button>
           </div>
         </nav>

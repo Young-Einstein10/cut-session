@@ -29,20 +29,18 @@ export default class BookSession extends Component {
 
   async handleSessionBooking(sessionId: string) {
     const titleField = $("[data-title='title']") as HTMLInputElement;
-    const notesField = $("[data-notes='notes']") as HTMLInputElement;
-
-    const [dd, mm, yyyy] = new Date().toLocaleDateString().split("/");
-    const bookingDate = `${yyyy}-${mm}-${dd}`;
+    const notesField = $("[data-notes='notes']") as HTMLTextAreaElement;
+    const dateField = $("[data-date='date']") as HTMLInputElement;
 
     try {
       const payload: BookingPayload = {
-        title: titleField!.value,
-        notes: notesField!.value,
+        title: titleField.value,
+        notes: notesField.value,
         sessionId: "6f5e6405-cdep-465e-ac98-144889426e37" || sessionId,
         userId:
           "6f5e6405-bbec-qaep-ac98-144889426e37" ||
           (localStorage.getItem("userId") as string),
-        date: bookingDate,
+        date: dateField.value,
       };
 
       store.dispatch(updateLoadingState(true));
@@ -85,8 +83,11 @@ export default class BookSession extends Component {
       <section class="dashboard__section">
         <!-- NAVBAR -->
         <header class="h-16 flex items-center border-b border-slate-800 px-4">
-          <nav class="flex justify-between items-center max-w-4xl w-full mx-auto">
-            <p class="text-2xl font-bold">CutSession</p>
+            <nav class="flex justify-between items-center max-w-4xl w-full mx-auto">
+              <a href="/user/dashboard" data-link>
+              <p class="text-2xl font-bold">CutSession</p>
+            </a>
+             
             <button id="logout-btn" class="hover:underline">Log Out</button>
           </nav>
         </header>
@@ -96,22 +97,38 @@ export default class BookSession extends Component {
 
             <form id="book-session-form">
               <div class="mb-6">
-                <label class="font-medium">Title</label>
+                <label for="title" class="font-medium">Title</label>
                 <input
+                  id="title"
                   type="text"
                   name="title"
                   data-title="title"
                   class="border w-full h-5 px-3 py-5 mt-2 hover:outline-none focus:outline-none focus:ring-indigo-500 focus:ring-1 rounded-md"
+                  required
                 />
               </div>
 
               <div class="mb-6">
-                <label class="font-medium block">Notes</label>
+                <label for="date" class="font-medium">Date</label>
+                <input
+                  id="date"
+                  type="date"
+                  name="date"
+                  data-date="date"
+                  class="border w-full h-5 px-3 py-5 mt-2 hover:outline-none focus:outline-none focus:ring-indigo-500 focus:ring-1 rounded-md"
+                  required
+                />
+              </div>
+
+              <div class="mb-6">
+                <label for="notes" class="font-medium block">Notes</label>
                 <textarea
+                  id="notes"
                   name="notes"
                   rows="6"
                   data-notes="notes"
                   class="border block w-full px-3 py-5 mt-2 hover:outline-none focus:outline-none focus:ring-indigo-500 focus:ring-1 rounded-md"
+                  required
                 ></textarea>
               </div>
 

@@ -92,49 +92,53 @@ export default class Login extends Component {
 
     this.element!.innerHTML = `
         <!-- --------------- LOGIN SECTION START --------------- -->
-        <section class="login__section">
-        <div
-            class="relative flex min-h-screen text-gray-800 antialiased flex-col justify-center overflow-hidden bg-gray-50 py-6 sm:py-12"
-        >
-            <form id="login-form" class="relative py-3 sm:w-96 mx-auto text-center">
-            <span class="text-3xl font-medium">Login</span>
-            <div class="mt-4 bg-white shadow-md rounded-lg text-left">
-                <div class="h-2 bg-slate-700 rounded-t-md"></div>
-                <div class="px-8 py-6">
-                <div class="mt-3">
-                    <label class="block font-semibold">Username</label>
-                    <input
-                      type="text"
-                      name="username"
-                      data-username="username"
-                      placeholder="Username"
-                      class="border w-full h-5 px-3 py-5 mt-2 hover:outline-none focus:outline-none focus:ring-indigo-500 focus:ring-1 rounded-md"
-                      required
-                    />
-                </div>
-    
-                <div class="mt-3">
-                    <label class="block font-semibold">Password</label>
-                    <input
-                      type="password"
-                      name="password"
-                      data-password="password"
-                      placeholder="Password"
-                      class="border w-full h-5 px-3 py-5 mt-2 hover:outline-none focus:outline-none focus:ring-indigo-500 focus:ring-1 rounded-md"
-                      required
-                    />
-                </div>
-    
-                <button
-                    type="submit"
-                    class="mt-4 bg-slate-700 text-white py-2 px-6 rounded-md w-full"
-                >
-                    ${isLoading ? "Submitting" : "Login"}
-                </button>
-                </div>
-            </div>
-            </form>
-        </div>
+        <section class="login__section">          
+          <div
+              class="relative flex min-h-screen text-gray-800 antialiased flex-col justify-center overflow-hidden bg-gray-50 py-6 sm:py-12"
+          >
+              <form id="login-form" class="relative py-3 sm:w-96 mx-auto text-center">
+              <span class="text-3xl font-medium">Merchant Login</span>
+              <div class="mt-6 bg-white shadow-md rounded-lg text-left">
+                  <div class="h-2 bg-slate-700 rounded-t-md"></div>
+                  <div class="px-8 py-6">
+                  <div class="mt-3">
+                      <label class="block font-semibold">Username</label>
+                      <input
+                        type="text"
+                        name="username"
+                        data-username="username"
+                        placeholder="Username"
+                        class="border w-full h-5 px-3 py-5 mt-2 hover:outline-none focus:outline-none focus:ring-indigo-500 focus:ring-1 rounded-md"
+                        required
+                      />
+                  </div>
+      
+                  <div class="mt-3">
+                      <label class="block font-semibold">Password</label>
+                      <input
+                        type="password"
+                        name="password"
+                        data-password="password"
+                        placeholder="Password"
+                        class="border w-full h-5 px-3 py-5 mt-2 hover:outline-none focus:outline-none focus:ring-indigo-500 focus:ring-1 rounded-md"
+                        required
+                      />
+                  </div>
+      
+                  <button
+                      type="submit"
+                      class="mt-4 bg-slate-700 text-white py-2 px-6 rounded-md w-full"
+                  >
+                      ${isLoading ? "Submitting" : "Login"}
+                  </button>
+                  </div>
+              </div>
+              </form>
+
+              <p class="text-center">
+                Are you a User? <a href="/user/login" class="hover:underline" data-link>Log In here</a>
+              </p>
+          </div>
         </section>
         <!-- --------------- LOGIN SECTION END --------------- -->
     `;

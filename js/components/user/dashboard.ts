@@ -54,8 +54,12 @@ export default class UserDashboard extends Component {
     studioItemList.forEach((studioItem) => {
       studioItem?.addEventListener("click", (e) => {
         const href = (e.target as HTMLElement).getAttribute("data-href");
-        console.log("Studio clicked", href);
-        return navigateTo(href);
+
+        if (href) {
+          return navigateTo(href);
+        }
+
+        return "";
       });
     });
   }
@@ -70,7 +74,7 @@ export default class UserDashboard extends Component {
 
   methods() {
     this.handleStudioSearch();
-    this.handleUserBookingsRoute();
+    // this.handleUserBookingsRoute();
     this.handleStudioClick();
     this.handleLogout();
   }
@@ -87,8 +91,8 @@ export default class UserDashboard extends Component {
 
   studioItemTemplate(studio: UserProps) {
     return `
-      <!-- STUDIO ITEM START -->
-        <article class="studio-item p-6 mb-8 rounded-xl hover:cursor-pointer hover:shadow-md" data-studio-id="${studio.merchantId}" data-href="/user/dashboard/${studio.merchantId}">
+      <article class="studio-item p-6 mb-8 rounded-xl hover:cursor-pointer hover:shadow-md" data-studio-id="${studio.merchantId}" data-href="${location.pathname}/${studio.merchantId}">
+        <a>
           <div>
             <div class="flex justify-between items-center">
               <p class="text-2xl font-medium">${studio.name}</p>
@@ -100,8 +104,8 @@ export default class UserDashboard extends Component {
               <span>${studio.cityOfOperation}</span>
             </div>
           </div>
-        </article>
-      <!-- STUDIO ITEM END -->
+        </a>
+      </article>
     `;
   }
 
@@ -109,47 +113,52 @@ export default class UserDashboard extends Component {
     let isSearching = store.getState().merchant.isSearching;
 
     return `
-    <main class="max-w-4xl w-full mx-auto">
-    <p class="my-4">Popular Studios Available:</p>
+      <div class="max-w-4xl w-full mx-auto px-4">
+        <p class="my-4">Popular Studios Available:</p>
 
-    <form class="studio_search my-6 flex items-center">
-      <label class="w-full">
-        <input
-          data-search="search"
-          class="border-slate-900 px-4 py-2 border-solid border-[1px] w-full h-12"
-          type="text"
-          placeholder="Search studios by name / city"
-        />
-      </label>
+        <form class="studio_search my-6 flex items-center">
+          <label class="w-full">
+            <input
+              data-search="search"
+              class="border-slate-900 px-4 py-2 border-solid border-[1px] w-full h-12"
+              type="text"
+              placeholder="Search studios by name / city"
+            />
+          </label>
 
-      <button
-        class="ml-4 bg-slate-900 text-sm text-white rounded-none px-6 py-2 h-12"
-      >
-        Search
-      </button>
-    </form>
+          <button
+            class="ml-4 bg-slate-900 text-sm text-white rounded-none px-6 py-2 h-12"
+          >
+            Search
+          </button>
+        </form>
 
-    ${
-      isSearching
-        ? `
-        <div class="mt-2 text-center">
-          <p class="text-lg italic font-medium">Searching...</p>
-        </div>
-      `
-        : `<div class="studio__list mt-2">
-          ${studios
-            .map((studio) => this.studioItemTemplate(studio))
-            .join("")
-            .toString()}
-          </div>`
-    }
-  </main>
+        ${
+          isSearching
+            ? `
+            <div class="mt-2 text-center">
+              <p class="text-lg italic font-medium">Searching...</p>
+            </div>
+          `
+            : `<div class="studio__list mt-2">
+              ${studios
+                .map((studio) => this.studioItemTemplate(studio))
+                .join("")
+                .toString()}
+              </div>`
+        }
+      </div>
     `;
   }
 
   render() {
     let isLoading = store.getState().merchant.isLoading;
-    let studios = store.getState().merchant.studio?.data || [];
+    let studios =
+      store
+        .getState()
+        .merchant.studio?.data?.filter((studio) =>
+          Boolean(studio.merchantId)
+        ) || [];
 
     this.element!.innerHTML = `
     <!-- --------------- DASHBOARD SECTION START --------------- -->
@@ -157,12 +166,19 @@ export default class UserDashboard extends Component {
       <!-- NAVBAR -->
       <header class="h-16 flex items-center border-b border-slate-800 px-4">
         <nav class="flex justify-between items-center max-w-4xl w-full mx-auto">
-          <p class="text-2xl font-bold">CutSession</p>
+          <a href="/user/dashboard" data-link>
+            <p class="text-2xl font-bold">CutSession</p>
+          </a>
           
           <div class="flex items-center">
-            <button id="my-bookings" class="hover:underline mr-4">My Bookings</button>
-            <button id="logout-btn" class="hover:underline">Log Out</button>
-        </div>        </nav>
+              <button id="session-bookings" class="hover:underline mr-4">
+                <a href="/user/session-bookings" data-link>
+                  Session Bookings
+                </a>
+              </button>
+              <button id="logout-btn" class="hover:underline">Log Out</button>
+          </div>       
+        </nav>
       </header>
     
       ${isLoading ? this.loadingTemplate() : this.mainTemplate(studios)}

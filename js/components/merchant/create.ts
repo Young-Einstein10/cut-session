@@ -89,12 +89,22 @@ export default class CreateSession extends Component {
           <h2 class="text-2xl text-center font-bold my-8">Create New Sessions</h2>
 
             <form id="create-session">
-                 <div class="mb-6">
-                    <label class="font-medium">Session Type</label>
-                    <select data-type="type" class="border w-full h-5 px-3 py-5 mt-2 hover:outline-none focus:outline-none focus:ring-indigo-500 focus:ring-1 rounded-md"
-                    >
-                        <option value="WeekDay">WeekDay</option>
-                        <option value="WeekEnd">WeekEnd</option>
+                <div class="mb-6">
+                    <label for="type" class="font-medium">Session Type</label>
+                    <select id="type" name="type" data-type="type" class="border w-full h-12 px-3 mt-2 hover:outline-none focus:outline-none focus:ring-indigo-500 focus:ring-1 rounded-md" required>
+                      <option value="" hidden>Selecet a Type</option>
+                      <option value="WeekDay">WeekDay</option>
+                      <option value="WeekEnd">WeekEnd</option>
+                    </select>
+                </div>
+
+                <div class="mb-6">
+                    <label for="timeslot" class="font-medium">Time Slot</label>
+                    <select id="timeslot" name="timeslot" data-timeslot="timeslot" class="border w-full h-12 px-3 mt-2 hover:outline-none focus:outline-none focus:ring-indigo-500 focus:ring-1 rounded-md" required>
+                      <option value="" hidden>Selecet a Time Slot</option>
+                      <option value="45">45m</option>
+                      <option value="60">60m</option>
+                      <option value="90">90m</option>
                     </select>
                 </div>
 
@@ -105,6 +115,7 @@ export default class CreateSession extends Component {
                         name="startsAt"
                         data-startsat="startsAt"
                         class="border w-full h-5 px-3 py-5 mt-2 hover:outline-none focus:outline-none focus:ring-indigo-500 focus:ring-1 rounded-md"
+                        required
                     />
                 </div>
 
@@ -115,6 +126,7 @@ export default class CreateSession extends Component {
                         name="endsAt"
                         data-endsat="endsAt"
                         class="border w-full h-5 px-3 py-5 mt-2 hover:outline-none focus:outline-none focus:ring-indigo-500 focus:ring-1 rounded-md"
+                        required
                     />
                 </div>
 

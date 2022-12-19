@@ -16,15 +16,9 @@ export default class Component {
 
     this.params = props.params;
 
-    // We're setting a render function as the one set by whatever inherits this base
-    // class or setting it to an empty by default. This is so nothing breaks if someone
-    // forgets to set it.
     this.render = this.render || function () {};
 
-    store.subscribe(() => {
-      console.log(store.getState());
-      self.render();
-    });
+    store.subscribe(() => self.render());
 
     // Store the HTML element to attach the render to if set
     if (props.hasOwnProperty("element")) {
