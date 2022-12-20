@@ -1,14 +1,30 @@
-import { CreateStudioSessionPayload } from "./../../lib/api/studioSessions";
+import { isWeekend } from "./../../utils/helpers";
+import { SessionType } from "./../../lib/api/studioSessions";
 import Component from "../../lib/component";
 import store from "../../store";
-import { $, $ID, checkAuthentication, logOut } from "../../utils/helpers";
+import {
+  $,
+  $ID,
+  checkAuthentication,
+  isWeekDays,
+  logOut,
+} from "../../utils/helpers";
 import { Params } from "./dashboard";
 import { updateLoadingState } from "../../store/slices/merchantSlice";
 import { notifySuccess } from "../../lib/toast";
 import { navigateTo } from "../../router";
 import api from "../../lib/api";
+import { isEqual, addMinutes } from "date-fns";
+import { getObjectKeys, validateForm } from "../../validations/helpers";
+
+type TimeSlot = "45" | "60" | "90";
 
 export default class CreateSession extends Component {
+  sessionType: SessionType;
+  selectedTimeSlot: TimeSlot;
+  startsAt: string;
+  endsAt: string;
+
   constructor(params: Params) {
     super({
       element: $ID("app") as HTMLElement,
@@ -20,19 +36,32 @@ export default class CreateSession extends Component {
 
   async handleSessionCreation() {
     const typeField = $("[data-type='type']") as HTMLInputElement;
+    const timeSlotField = $("[data-timeslot='timeslot']") as HTMLSelectElement;
     const startsAtField = $("[data-startsat='startsAt']") as HTMLInputElement;
     const endsAtField = $("[data-endsat='endsAt']") as HTMLInputElement;
 
     const merchantId = localStorage.getItem("merchantId") as string;
 
     try {
-      const payload: CreateStudioSessionPayload = {
-        endsAt: endsAtField.value,
+      const initialData = {
+        type: typeField.value as SessionType,
+        timeslot: timeSlotField.value as TimeSlot,
         startsAt: startsAtField.value,
-        type: typeField.value as CreateStudioSessionPayload["type"],
+        endsAt: endsAtField.value,
       };
 
-      console.log(payload);
+      console.log(initialData);
+
+      const errors = await validateForm(initialData, "createSession");
+      console.log(errors);
+
+      if (getObjectKeys(errors).length > 0) {
+        return;
+      }
+
+      console.log("Working, No Errors");
+
+      const { timeslot, ...payload } = initialData;
 
       store.dispatch(updateLoadingState(true));
 
@@ -67,7 +96,114 @@ export default class CreateSession extends Component {
     });
   }
 
+  updateTimeFields(state: boolean) {
+    // Starts At
+    ($("[data-startsat='startsAt']") as HTMLInputElement).disabled = state;
+
+    // Ends At
+    ($("[data-endsat='endsAt']") as HTMLInputElement).disabled = state;
+  }
+
+  validateTime(value: string): { message?: string } {
+    let errors = {};
+
+    if (this.sessionType === "WeekDay" && !isWeekDays(value)) {
+      errors = {
+        message: "Sessions can only be within 9am - 8pm on WeekDays",
+      };
+    }
+
+    if (this.sessionType === "WeekEnd" && !isWeekend(value)) {
+      errors = {
+        message: "Sessions can only be within 10am - 10pm on WeekEnd",
+      };
+    }
+    return errors;
+  }
+
+  validateTimeSlot(timeValue: string): { message?: string } {
+    let errors = {};
+
+    const startsAt = new Date(`01/01/2011 ${this.startsAt}`);
+    const endsAt = new Date(`01/01/2011 ${timeValue}`);
+
+    if (this.selectedTimeSlot) {
+      const result = addMinutes(startsAt, parseInt(this.selectedTimeSlot));
+
+      // If added minutes is not equal to the time entered, return error
+      if (!isEqual(result, endsAt)) {
+        errors = {
+          message: `Time entered must be a ${this.selectedTimeSlot} minute duration`,
+        };
+      }
+    }
+
+    return errors;
+  }
+
+  setupFieldListeners() {
+    // ============Session Type=======================
+    $("[data-type='type']")?.addEventListener("change", (e) => {
+      this.sessionType = (e.target as HTMLSelectElement).value as SessionType;
+    });
+
+    // ============Time Slot=======================
+    $("[data-timeslot='timeslot']")?.addEventListener("change", (e) => {
+      const value = (e.target as HTMLSelectElement).value as TimeSlot;
+      this.selectedTimeSlot = value;
+
+      value ? this.updateTimeFields(false) : this.updateTimeFields(true);
+    });
+
+    // ============Starts At=======================
+    $("[data-startsat='startsAt']")?.addEventListener("change", (e) => {
+      const target = e.target as HTMLSelectElement;
+      const value = target.value;
+
+      const errors = this.validateTime(value);
+
+      if (getObjectKeys(errors).length > 0) {
+        if (target.nextElementSibling) {
+          target.nextElementSibling.innerHTML = `${errors.message}`;
+        }
+        return;
+      } else {
+        // Clear Errors
+        target.nextElementSibling!.innerHTML = "";
+      }
+
+      this.startsAt = value;
+    });
+
+    // ============Ends At=======================
+    $("[data-endsat='endsAt']")?.addEventListener("change", (e) => {
+      const target = e.target as HTMLSelectElement;
+      const value = target.value;
+
+      const errors = this.validateTime(value);
+      const errors2 = this.validateTimeSlot(value);
+
+      if (
+        getObjectKeys(errors).length > 0 ||
+        getObjectKeys(errors2).length > 0
+      ) {
+        if (target.nextElementSibling) {
+          target.nextElementSibling.innerHTML = `${
+            errors.message || errors2.message
+          }`;
+        }
+        return;
+      } else {
+        // Clear Errors
+        target.nextElementSibling!.innerHTML = "";
+      }
+
+      this.endsAt = value;
+    });
+  }
+
   methods() {
+    this.setupFieldListeners();
     this.handleFormSubmission();
     this.handleLogout();
   }
@@ -91,21 +227,23 @@ export default class CreateSession extends Component {
             <form id="create-session">
                 <div class="mb-6">
                     <label for="type" class="font-medium">Session Type</label>
-                    <select id="type" name="type" data-type="type" class="border w-full h-12 px-3 mt-2 hover:outline-none focus:outline-none focus:ring-indigo-500 focus:ring-1 rounded-md" required>
-                      <option value="" hidden>Selecet a Type</option>
+                    <select id="type" name="type" data-type="type" class="border w-full h-12 px-3 mt-2 hover:outline-none focus:outline-none focus:ring-indigo-500 focus:ring-1 rounded-md" >
+                      <option value="" hidden>Select a Type</option>
                       <option value="WeekDay">WeekDay</option>
                       <option value="WeekEnd">WeekEnd</option>
                     </select>
+                    <span class="error-msg text-red-600 text-xs mt-2"></span>
                 </div>
 
                 <div class="mb-6">
                     <label for="timeslot" class="font-medium">Time Slot</label>
-                    <select id="timeslot" name="timeslot" data-timeslot="timeslot" class="border w-full h-12 px-3 mt-2 hover:outline-none focus:outline-none focus:ring-indigo-500 focus:ring-1 rounded-md" required>
-                      <option value="" hidden>Selecet a Time Slot</option>
+                    <select id="timeslot" name="timeslot" data-timeslot="timeslot" class="border w-full h-12 px-3 mt-2 hover:outline-none focus:outline-none focus:ring-indigo-500 focus:ring-1 rounded-md" >
+                      <option value="" hidden>Select a Time Slot</option>
                       <option value="45">45m</option>
                       <option value="60">60m</option>
                       <option value="90">90m</option>
                     </select>
+                    <span class="error-msg text-red-600 text-xs mt-2"></span>
                 </div>
 
                 <div class="mb-6">
@@ -115,8 +253,10 @@ export default class CreateSession extends Component {
                         name="startsAt"
                         data-startsat="startsAt"
                         class="border w-full h-5 px-3 py-5 mt-2 hover:outline-none focus:outline-none focus:ring-indigo-500 focus:ring-1 rounded-md"
-                        required
+                        disabled
+                        
                     />
+                    <span class="error-msg text-red-600 text-xs mt-2"></span>
                 </div>
 
                 <div class="mb-6">
@@ -126,8 +266,10 @@ export default class CreateSession extends Component {
                         name="endsAt"
                         data-endsat="endsAt"
                         class="border w-full h-5 px-3 py-5 mt-2 hover:outline-none focus:outline-none focus:ring-indigo-500 focus:ring-1 rounded-md"
-                        required
+                        disabled
+                        
                     />
+                    <span class="error-msg text-red-600 text-xs mt-2"></span>
                 </div>
 
                 <button class="w-full h-12 bg-slate-900 text-sm text-white rounded-md px-4 py-2 hover:bg-slate-800">

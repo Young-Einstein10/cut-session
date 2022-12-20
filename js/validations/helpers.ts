@@ -1,4 +1,5 @@
 import { AnySchema, ValidationError } from "yup";
+import validationSchemas from "./schemas";
 
 export interface PPValidationError {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -27,10 +28,15 @@ const validateField = async <T>(
 
 export const getObjectKeys = <T>(data: T): string[] => Object.keys(data as any);
 
+type Type = typeof validationSchemas;
+
 export const validateForm = async <T>(
   data: T,
-  schema: AnySchema
+  type: keyof Type
 ): Promise<PPValidationError> => {
-  const errors: PPValidationError = await validateField(data, schema);
+  const errors: PPValidationError = await validateField(
+    data,
+    validationSchemas[type]
+  );
   return errors;
 };

@@ -45,6 +45,7 @@ export const navigateTo = (url) => {
 
 const router = async () => {
   const routes: { path: string; view: typeof Component }[] = [
+    { path: "/", view: UserLogin },
     { path: "/user/dashboard", view: UserDashboard },
     { path: "/user/dashboard/:id/book", view: BookSession },
     { path: "/user/dashboard/:id", view: StudioSessions },
