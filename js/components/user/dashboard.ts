@@ -91,16 +91,16 @@ export default class UserDashboard extends Component {
 
   studioItemTemplate(studio: UserProps) {
     return `
-      <article class="studio-item p-6 mb-8 rounded-xl hover:cursor-pointer hover:shadow-md" data-studio-id="${studio.merchantId}" data-href="${location.pathname}/${studio.merchantId}">
+      <article class="studio-item px-4 sm:px-6 py-6 mb-8 rounded-xl hover:cursor-pointer hover:shadow-md" data-studio-id="${studio.merchantId}" data-href="${location.pathname}/${studio.merchantId}">
         <a>
           <div>
-            <div class="flex justify-between items-center">
+            <div class="flex flex-col sm:flex-row flex-wrap justify-between sm:items-center">
               <p class="text-2xl font-medium">${studio.name}</p>
               <p>${studio.phoneNumber}</p>
             </div>
 
-            <div class="flex justify-between items-center italic text-slate-500">
-              <span class="">${studio.email}</span>
+            <div class="flex flex-col sm:flex-row flex-wrap justify-between sm:items-center italic text-slate-500">
+              <span class="flex-wrap flex-shrink">${studio.email}</span>
               <span>${studio.cityOfOperation}</span>
             </div>
           </div>
