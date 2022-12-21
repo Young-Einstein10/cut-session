@@ -1,7 +1,7 @@
 {
   "name": "vite-typescript-starter",
   "private": true,
-  "version": "0.0.0",
+  "version": "1.0.0",
   "scripts": {
     "tailwind:css": "postcss ./src/styles/main.css -o ./src/styles/output.css",
     "dev": "vite",
