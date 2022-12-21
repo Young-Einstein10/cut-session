@@ -67,7 +67,7 @@ export default class Login extends Component {
 
       notifySuccess("Logged In Successfully.");
 
-      navigateTo("dashboard");
+      navigateTo("/merchant/dashboard");
     } catch (error) {
       store.dispatch(updateAuthLoadingState(false));
       console.log(error);

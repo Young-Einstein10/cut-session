@@ -113,7 +113,9 @@ export default class MerchantDashboard extends Component {
     <section class="dashboard__section">
       <header class="h-16 flex items-center border-b border-slate-800 px-4">
         <nav class="flex justify-between items-center max-w-4xl w-full mx-auto">
-          <p class="text-2xl font-bold">CutSession</p>
+          <a href="/merchant/dashboard" data-link>
+            <p class="text-2xl font-bold">CutSession</p>
+          </a>
 
           <div class="flex items-center">
             <button class="hover:underline mr-4">
