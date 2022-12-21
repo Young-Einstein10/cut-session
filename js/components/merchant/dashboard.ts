@@ -79,6 +79,19 @@ export default class MerchantDashboard extends Component {
     );
   }
 
+  async handleCopyWidgetBtn() {
+    const merchantId = localStorage.getItem("merchantId");
+    return navigator.clipboard
+      .writeText(
+        `<script src="https://cdn.jsdelivr.net/gh/Young-Einstein10/cut-session@main/js/cut-session-widget.min.js" data-merchantId="${merchantId}" data-widget></script>`
+      )
+      .then(() => console.log("copied"))
+      .catch((err) => {
+        window.alert("Error copying script");
+        console.log(err);
+      });
+  }
+
   handleLogout() {
     const logoutBtn = $ID("logout-btn") as HTMLButtonElement;
     logoutBtn.addEventListener("click", () => logOut("merchant"));
@@ -86,6 +99,7 @@ export default class MerchantDashboard extends Component {
 
   methods() {
     this.handleCreateSession();
+    $ID("copy-widget-btn")?.addEventListener("click", this.handleCopyWidgetBtn);
     // this.handleUserBookingsRoute();
     this.handleLogout();
   }
@@ -112,6 +126,27 @@ export default class MerchantDashboard extends Component {
     
 
       <div class="max-w-3xl w-full mx-auto">
+        <div class="widget-container mt-8">
+          <h2 class="text-2xl font-bold">Embeddable Widget</h2>
+
+          <div class="mt-4">
+            <p>Copy the script below and add to the body of your index.html page to include an embeddable widget in your website:</p>
+
+            <blockquote class="mt-2 text-sm px-4 py-4 rounded-full overflow-x-auto border border-solid border-slate-600 flex items-center justify-between">
+                <span class="text-sm flex-shrink-0 flex-grow">
+                  <code class="text-xs flex-shrink-0 italic">
+                    <span class="line"><span class="cl"><span class="p">&lt;</span><span class="nt">script</span> <span class="na">src</span><span class="o">=</span><span class="s">"https://...js" data-merchantId="&lt;YOUR_MERCHANT_ID&gt;" data-widget</span><span class="p">&gt;&lt;/</span><span class="nt">script</span><span class="p">&gt;</span>
+                      </span></span>
+                  </code>
+                </span>
+                  
+                <button id="copy-widget-btn" class="hover:underline flex-shrink-0">
+                  Copy
+                </button>
+            </blockquote>
+          </div>
+        </div>
+
         <div class="flex justify-between items-center mt-8 mb-4">
           <h2 class="text-2xl font-bold">All Available Sessions</h2>
           <button id="create-session" 

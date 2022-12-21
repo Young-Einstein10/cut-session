@@ -39,7 +39,7 @@ const CLOSE_SVG = `
   </svg>
 `;
 
-export default class CutSession {
+class CutSession {
   position = {};
   sessions;
   open = false;
