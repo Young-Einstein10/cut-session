@@ -116,12 +116,19 @@ export default class StudioSessions extends Component {
     <section class="dashboard__section">
       <!-- NAVBAR -->
       <header class="h-16 flex items-center border-b border-slate-800 px-4">
-          <nav class="flex justify-between items-center max-w-4xl w-full mx-auto">
-            <a href="/user/dashboard" data-link>
+        <nav class="flex justify-between items-center max-w-4xl w-full mx-auto">
+          <a href="/user/dashboard" data-link>
             <p class="text-2xl font-bold">CutSession</p>
           </a>
-      
-          <button id="logout-btn" class="hover:underline">Log Out</button>
+          
+          <div class="flex items-center">
+              <button id="session-bookings" class="hover:underline mr-4">
+                <a href="/user/session-bookings" data-link>
+                  Session Bookings
+                </a>
+              </button>
+              <button id="logout-btn" class="hover:underline">Log Out</button>
+          </div>       
         </nav>
       </header>
     

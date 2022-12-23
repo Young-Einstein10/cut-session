@@ -214,14 +214,20 @@ export default class CreateSession extends Component {
     this.element!.innerHTML = `
     <section class="dashboard__section">
       <!-- NAVBAR -->
-      <header class="h-16 flex items-center border-b border-slate-800 px-4">
-        <nav class="flex justify-between items-center max-w-4xl w-full mx-auto">
-          <a href="/merchant/dashboard" data-link>
-            <p class="text-2xl font-bold">CutSession</p>
-          </a>
-          <button id="logout-btn" class="hover:underline">Log Out</button>
-        </nav>
-      </header>
+          <header class="h-16 flex items-center border-b border-slate-800 px-4">
+            <nav class="flex justify-between items-center max-w-4xl w-full mx-auto">
+                <a href="/merchant/dashboard" data-link>
+                  <p class="text-2xl font-bold">CutSession</p>
+                </a>
+              
+                <div class="flex items-center">
+                    <button class="hover:underline mr-4">
+                      <a href="/merchant/bookings" data-link>Bookings</a>
+                    </button>
+                    <button id="logout-btn" class="hover:underline">Log Out</button>
+                </div> 
+            </nav>
+          </header>
         
       <div class="max-w-xl w-full mx-auto">
           <h2 class="text-2xl text-center font-bold my-8">Create New Sessions</h2>

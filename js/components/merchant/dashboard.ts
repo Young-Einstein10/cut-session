@@ -119,7 +119,7 @@ export default class MerchantDashboard extends Component {
 
           <div class="flex items-center">
             <button class="hover:underline mr-4">
-              <a href="${location.pathname}/bookings" data-link>Bookings</a>
+              <a href="/merchant/bookings" data-link>Bookings</a>
             </button>
             <button id="logout-btn" class="hover:underline">Log Out</button>
           </div>

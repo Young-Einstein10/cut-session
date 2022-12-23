@@ -53,8 +53,8 @@ const router = async () => {
     { path: "/user/login", view: UserLogin },
     { path: "/user/register", view: UserRegister },
 
+    { path: "/merchant/bookings", view: MerchantBookings },
     { path: "/merchant/dashboard", view: MerchantDashboard },
-    { path: "/merchant/dashboard/bookings", view: MerchantBookings },
     { path: "/merchant/create", view: CreateSessions },
     { path: "/merchant/login", view: MerchantLogin },
     { path: "/merchant/register", view: MerchantRegister },
@@ -93,10 +93,10 @@ document.addEventListener("DOMContentLoaded", () => {
     const link = e.target as HTMLLinkElement;
     if (link.matches("[data-link]")) {
       e.preventDefault();
-      // console.log("FOUND A MATCH", link);
+      console.log("FOUND A MATCH", link);
       return navigateTo(link.href);
     }
-    // console.log("NO_MATCH");
+    console.log("NO_MATCH");
   });
   router();
 });
