@@ -113,7 +113,6 @@ class CutSession {
     const weekEndSessions = sessions.filter(
       (session) => session.type === "WeekEnd"
     );
-
     const content = document.createElement("div");
 
     content.innerHTML = `
@@ -246,11 +245,6 @@ function renderTableHeaders() {
         >
           Ends At
         </th>
-        <th
-        class="border-b border-slate-900 font-medium p-4 pr-8 pt-4 pb-3 text-black text-left"
-      >
-        Actions
-      </th>
       </tr>
     `;
 }
@@ -269,11 +263,6 @@ function renderTableRows(data) {
         }</td>
         <td class="border-b border-slate-900 p-4 pr-8 text-black">
           ${session.endsAt}
-        </td>
-        <td class="border-b border-slate-900 p-4 pl-8 text-black">
-                <button class="book-session-btn bg-slate-900 text-sm text-white rounded-md px-4 py-2 hover:bg-slate-800">     
-                    Book
-                </button>
         </td>
       </tr>
     `
