@@ -3,7 +3,13 @@ import Component from "../../lib/component.js";
 import { navigateTo } from "../../router/index.js";
 import store from "../../store/index.js";
 import { updateAuthLoadingState } from "../../store/slices/authSlice.js";
-import { $, $ID, routeTo } from "../../utils/helpers.js";
+import {
+  $,
+  $ID,
+  clearAllErrors,
+  displayErrorMessage,
+} from "../../utils/helpers.js";
+import { getObjectKeys, validateForm } from "../../validations/helpers.js";
 import { Params } from "../merchant/dashboard.js";
 
 export default class Register extends Component {
@@ -72,6 +78,7 @@ export default class Register extends Component {
           placeholder="${field.placeholder}"
           class="border w-full h-5 px-3 py-5 mt-2 hover:outline-none focus:outline-none focus:ring-indigo-500 focus:ring-1 rounded-md"
         />
+        <span class="error-msg text-red-600 text-xs mt-2"></span>
       </div>
     `
       )
@@ -107,11 +114,14 @@ export default class Register extends Component {
         password: passwordField.value,
       };
 
-      console.log(payload);
+      clearAllErrors(Object.keys(payload));
 
-      // Validate Fields
+      const errors = await validateForm(payload, "registerUser");
 
-      // Validate Fields
+      if (getObjectKeys(errors).length > 0) {
+        displayErrorMessage(errors);
+        return;
+      }
 
       store.dispatch(updateAuthLoadingState(true));
 
@@ -142,7 +152,6 @@ export default class Register extends Component {
     let isLoading = store.getState().auth.isLoading;
 
     this.element!.innerHTML = `
-    <!-- --------------- LOGIN SECTION START --------------- -->
     <section class="register__section">
       <div
         class="relative flex min-h-screen text-gray-800 antialiased flex-col justify-center overflow-hidden bg-gray-50 py-6 sm:py-12"
@@ -163,9 +172,12 @@ export default class Register extends Component {
             </div>
           </div>
         </form>
+
+        <p class="text-center mt-2">
+          Already have an account? <a href="/merchant/login" class="hover:underline" data-link>Log In</a>
+        </p>
       </div>
     </section>
-    <!-- --------------- LOGIN SECTION END --------------- -->
     `;
 
     this.methods();

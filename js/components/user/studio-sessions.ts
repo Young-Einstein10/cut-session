@@ -3,7 +3,14 @@ import Component from "../../lib/component";
 import { navigateTo } from "../../router";
 import store from "../../store";
 import { handleFetchSessions } from "../../utils/functions";
-import { $, $ID, $ll, checkAuthentication, logOut } from "../../utils/helpers";
+import {
+  $,
+  $ID,
+  $ll,
+  checkAuthentication,
+  logOut,
+  parseTime,
+} from "../../utils/helpers";
 
 export type Params = { [k: string]: string };
 
@@ -23,26 +30,26 @@ export default class StudioSessions extends Component {
   renderTableHeaders() {
     return `
       <tr>
-        <th class="border-b border-slate-900 font-medium p-4 pl-8 pt-4 pb-3 text-black text-left">
+        <th class="border-b border-slate-900 font-bold p-4 pl-8 pt-4 pb-3 text-black text-left">
           S/N
         </th>
         <th
-          class="border-b border-slate-900 font-medium p-4 pl-8 pt-4 pb-3 text-black text-left"
+          class="border-b border-slate-900 font-bold p-4 pl-8 pt-4 pb-3 text-black text-left"
         >
           Type
         </th>
         <th
-          class="border-b border-slate-900 font-medium p-4 pt-4 pb-3 text-black text-left"
+          class="border-b border-slate-900 font-bold p-4 pt-4 pb-3 text-black text-left"
         >
           Starts At
         </th>
         <th
-          class="border-b border-slate-900 font-medium p-4 pr-8 pt-4 pb-3 text-black text-left"
+          class="border-b border-slate-900 font-bold p-4 pr-8 pt-4 pb-3 text-black text-left"
         >
           Ends At
         </th>
         <th
-        class="border-b border-slate-900 font-medium p-4 pr-8 pt-4 pb-3 text-black text-left"
+        class="border-b border-slate-900 font-bold p-4 pr-8 pt-4 pb-3 text-black text-left"
       >
         Actions
       </th>
@@ -104,6 +111,14 @@ export default class StudioSessions extends Component {
   render() {
     let sessions: StudioSessionProps[] =
       store.getState().merchant.sessions || [];
+    sessions = sessions.map((session) => {
+      return {
+        ...session,
+        startsAt: parseTime(session.startsAt),
+        endsAt: parseTime(session.endsAt),
+      };
+    });
+
     const weekDaySessions = sessions.filter(
       (session) => session.type === "WeekDay"
     );
@@ -138,16 +153,19 @@ export default class StudioSessions extends Component {
           <div class="shadow-sm overflow-hidden my-8">
             <div>
               <h2 class="mb-4 font-medium">Sessions available during weekdays.</h2>
-              <table
-                class="border-collapse border border-solid border-slate-900 table-auto w-full text-sm"
-              >
-                <thead>
-                  ${this.renderTableHeaders()}
-                </thead>
-                <tbody>
-                  ${this.renderTableRows(weekDaySessions)}
-                </tbody>
-              </table>
+
+              <div class="w-full overflow-x-auto">
+                <table
+                  class="border-collapse border border-solid border-slate-900 table-auto w-full text-sm"
+                >
+                  <thead>
+                    ${this.renderTableHeaders()}
+                  </thead>
+                  <tbody>
+                    ${this.renderTableRows(weekDaySessions)}
+                  </tbody>
+                </table>
+              </div>
             </div>
 
 

@@ -7,9 +7,15 @@ import {
   updateCredentials,
   updateAuthLoadingState,
 } from "../../store/slices/authSlice.js";
-import { $, $ID } from "../../utils/helpers.js";
+import {
+  $,
+  $ID,
+  clearAllErrors,
+  displayErrorMessage,
+} from "../../utils/helpers.js";
 import { isAxiosError } from "axios";
 import { notifyError, notifySuccess } from "../../lib/toast.js";
+import { getObjectKeys, validateForm } from "../../validations/helpers.js";
 
 export default class Login extends Component {
   constructor() {
@@ -35,17 +41,14 @@ export default class Login extends Component {
         accessType: "USER",
       };
 
-      // Validate Input Fields
+      clearAllErrors(Object.keys({ username: "", password: "" }));
 
-      // const errors = await validateForm(payload, loginSchema);
+      const errors = await validateForm(payload, "login");
 
-      // if (this.isFieldsTouched && getObjectKeys(errors).length > 0) {
-      //   this.displayErrorMessage(errors);
-      //   return;
-      // }
-
-      // this.isFieldsTouched = true;
-      // console.log(payload);
+      if (getObjectKeys(errors).length > 0) {
+        displayErrorMessage(errors);
+        return;
+      }
 
       store.dispatch(updateAuthLoadingState(true));
 
@@ -107,6 +110,7 @@ export default class Login extends Component {
                       class="border w-full h-5 px-3 py-5 mt-2 hover:outline-none focus:outline-none focus:ring-indigo-500 focus:ring-1 rounded-md"
                       required
                     />
+                    <span class="error-msg text-red-600 text-xs mt-2"></span>
                 </div>
     
                 <div class="mt-3">
@@ -119,6 +123,7 @@ export default class Login extends Component {
                       class="border w-full h-5 px-3 py-5 mt-2 hover:outline-none focus:outline-none focus:ring-indigo-500 focus:ring-1 rounded-md"
                       required
                     />
+                    <span class="error-msg text-red-600 text-xs mt-2"></span>
                 </div>
     
                 <button
@@ -132,7 +137,11 @@ export default class Login extends Component {
             </form>
 
             <p class="text-center">
-              Are you a Merchant? <a href="/merchant/login" class="hover:underline" data-link>Log In here</a>
+              Are you a <span class="font-bold">Merchant</span> ? <a href="/merchant/login" class="hover:underline" data-link>Log In here</a>
+            </p>
+
+            <p class="mt-4 text-center">
+              Don't have an account? <a href="/user/register" class="hover:underline" data-link>Register</a>
             </p>
         </div>
         </section>

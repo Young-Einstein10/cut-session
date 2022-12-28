@@ -6,7 +6,14 @@ import {
   handleFetchBookings,
   handleFetchMerchants,
 } from "../../utils/functions";
-import { $, $ID, $ll, checkAuthentication, logOut } from "../../utils/helpers";
+import {
+  $,
+  $ID,
+  $ll,
+  checkAuthentication,
+  logOut,
+  parseTime,
+} from "../../utils/helpers";
 import { Params } from "./studio-sessions";
 import ldCover from "ldcover";
 
@@ -41,26 +48,26 @@ export default class SessionBookings extends Component {
   renderTableHeaders() {
     return `
       <tr>
-        <th class="border-b border-slate-900 font-medium p-4 pl-8 pt-4 pb-3 text-black text-left">
+        <th class="border-b border-slate-900 font-bold p-4 pl-8 pt-4 pb-3 text-black text-left">
           S/N
         </th>
         <th
-          class="border-b border-slate-900 font-medium p-4 pl-8 pt-4 pb-3 text-black text-left"
+          class="border-b border-slate-900 font-bold p-4 pl-8 pt-4 pb-3 text-black text-left"
         >
           Booking Ref
         </th>
         <th
-          class="border-b border-slate-900 font-medium p-4 pt-4 pb-3 text-black text-left"
+          class="border-b border-slate-900 font-bold p-4 pt-4 pb-3 text-black text-left"
         >
           Starts At
         </th>
         <th
-          class="border-b border-slate-900 font-medium p-4 pr-8 pt-4 pb-3 text-black text-left"
+          class="border-b border-slate-900 font-bold p-4 pr-8 pt-4 pb-3 text-black text-left"
         >
           Ends At
         </th>
         <th
-        class="border-b border-slate-900 font-medium p-4 pr-8 pt-4 pb-3 text-black text-left"
+        class="border-b border-slate-900 font-bold p-4 pr-8 pt-4 pb-3 text-black text-left"
       >
         Actions
       </th>
@@ -176,26 +183,26 @@ export default class SessionBookings extends Component {
             </div>
           `
             : `
-              <div class="max-w-3xl w-full mx-auto">
-                <div class="relative rounded-xl overflow-auto">
+                <div class="relative rounded-xl">
                     <div class="shadow-sm overflow-hidden my-8">
                         <div>
-                        <h2 class="font-bold text-md mb-8">All Bookings</h2>
+                          <h2 class="font-bold text-md mb-8">All Bookings</h2>
 
-                        <table
-                            class="border-collapse border border-solid border-slate-900 table-auto w-full text-sm"
-                        >
-                            <thead>
-                            ${this.renderTableHeaders()}
-                            </thead>
-                            <tbody>
-                            ${this.renderTableRows(bookings)}
-                            </tbody>
-                        </table>
+                          <div class="w-full overflow-x-auto">
+                            <table
+                                class="border-collapse border border-solid border-slate-900 table-auto w-full text-sm"
+                            >
+                                <thead>
+                                ${this.renderTableHeaders()}
+                                </thead>
+                                <tbody>
+                                ${this.renderTableRows(bookings)}
+                                </tbody>
+                            </table>
+                          </div>
                         </div>
                     </div>
                 </div>
-              </div> 
             `
         }
       </div>
@@ -225,12 +232,12 @@ export default class SessionBookings extends Component {
 
       <p class="mb-4">
         <strong>Starts At:</strong>
-        <span>${booking?.startsAt}</span> 
+        <span>${parseTime(booking!.startsAt)}</span> 
       </p> 
 
       <p class="mb-4">
         <strong>Ends At:</strong>
-        <span>${booking?.endsAt}</span> 
+        <span>${parseTime(booking!.endsAt)}</span> 
       </p> 
 
       <p>
@@ -353,6 +360,14 @@ export default class SessionBookings extends Component {
 
   render() {
     let bookings = store.getState().merchant.bookings.data || [];
+
+    bookings = bookings.map((booking) => {
+      return {
+        ...booking,
+        startsAt: parseTime(booking.startsAt),
+        endsAt: parseTime(booking.endsAt),
+      };
+    });
 
     this.element!.innerHTML = `
         <section class="bookings__section">

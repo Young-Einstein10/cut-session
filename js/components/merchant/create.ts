@@ -1,4 +1,8 @@
-import { isWeekend } from "./../../utils/helpers";
+import {
+  clearAllErrors,
+  displayErrorMessage,
+  isWeekend,
+} from "./../../utils/helpers";
 import { SessionType } from "./../../lib/api/studioSessions";
 import Component from "../../lib/component";
 import store from "../../store";
@@ -50,16 +54,14 @@ export default class CreateSession extends Component {
         endsAt: endsAtField.value,
       };
 
-      console.log(initialData);
+      clearAllErrors(Object.keys(initialData));
 
       const errors = await validateForm(initialData, "createSession");
-      console.log(errors);
 
       if (getObjectKeys(errors).length > 0) {
+        displayErrorMessage(errors);
         return;
       }
-
-      console.log("Working, No Errors");
 
       const { timeslot, ...payload } = initialData;
 

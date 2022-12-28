@@ -3,7 +3,12 @@ import Component from "../../lib/component";
 import { navigateTo } from "../../router";
 import store from "../../store";
 import { handleFetchSessions } from "../../utils/functions";
-import { $ID, checkAuthentication, logOut, routeTo } from "../../utils/helpers";
+import {
+  $ID,
+  checkAuthentication,
+  logOut,
+  parseTime,
+} from "../../utils/helpers";
 
 export type Params = { [k: string]: string };
 
@@ -16,9 +21,11 @@ export default class MerchantDashboard extends Component {
 
     checkAuthentication();
 
+    const storedMerchantId = localStorage.getItem("merchantId");
     const merchantId =
-      "6f5e6405-bbec-465e-ac98-144889426e37" ||
-      localStorage.getItem("merchantId");
+      storedMerchantId && storedMerchantId?.length >= 15
+        ? storedMerchantId
+        : "6f5e6405-bbec-465e-ac98-144889426e";
 
     handleFetchSessions(merchantId as string);
   }
@@ -27,17 +34,17 @@ export default class MerchantDashboard extends Component {
     return `
       <tr>
         <th
-          class="border-b border-slate-900 font-medium p-4 pl-8 pt-4 pb-3 text-black text-left"
+          class="border-b border-slate-900 font-bold p-4 pl-8 pt-4 pb-3 text-black text-left"
         >
           Type
         </th>
         <th
-          class="border-b border-slate-900 font-medium p-4 pt-4 pb-3 text-black text-left"
+          class="border-b border-slate-900 font-bold p-4 pt-4 pb-3 text-black text-left"
         >
           Starts At
         </th>
         <th
-          class="border-b border-slate-900 font-medium p-4 pr-8 pt-4 pb-3 text-black text-left"
+          class="border-b border-slate-900 font-bold p-4 pr-8 pt-4 pb-3 text-black text-left"
         >
           Ends At
         </th>
@@ -108,6 +115,14 @@ export default class MerchantDashboard extends Component {
     let sessions: StudioSessionProps[] =
       store.getState().merchant.sessions || [];
 
+    sessions = sessions.map((session) => {
+      return {
+        ...session,
+        startsAt: parseTime(session.startsAt),
+        endsAt: parseTime(session.endsAt),
+      };
+    });
+
     this.element!.innerHTML = `
     <!-- --------------- DASHBOARD SECTION START --------------- -->
     <section class="dashboard__section">
@@ -158,16 +173,18 @@ export default class MerchantDashboard extends Component {
 
         <div class="relative rounded-xl overflow-auto">
           <div class="shadow-sm overflow-hidden my-8">
-            <table
-              class="border-collapse border border-solid border-slate-900 table-auto w-full text-sm"
-            >
-              <thead>
-                ${this.renderTableHeaders()}
-              </thead>
-              <tbody>
-                ${this.renderTableRows(sessions)}
-              </tbody>
-            </table>
+            <div class="w-full overflow-x-auto">
+              <table
+                class="border-collapse border border-solid border-slate-900 table-auto w-full text-sm"
+              >
+                <thead>
+                  ${this.renderTableHeaders()}
+                </thead>
+                <tbody>
+                  ${this.renderTableRows(sessions)}
+                </tbody>
+              </table>
+            </div>  
           </div>
         </div>
       </div>

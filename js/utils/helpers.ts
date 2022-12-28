@@ -26,6 +26,10 @@ export const logOut = (from: "user" | "merchant") => {
   return navigateTo(`/${from}/login`);
 };
 
+export const parseTime = (time: string) => {
+  return time.split(".")[0];
+};
+
 export const isWeekDays = (value: string) => {
   const weekDayStartDateToCompare = new Date(`01/01/2011 09:00`);
   const weekDayEndDateToCompare = new Date(`01/01/2011 20:00`);
@@ -74,4 +78,31 @@ export const validateTimeSlot = (
   }
 
   return getObjectKeys(errors).length === 0;
+};
+
+export const clearAllErrors = (keys: string[]) => {
+  if (keys.length > 0) {
+    keys.forEach((key) => {
+      const target = $(`[name='${key}']`);
+
+      if (target?.nextElementSibling) {
+        target.nextElementSibling.innerHTML = "";
+      }
+    });
+  }
+};
+
+// Display error messages in the DOM
+export const displayErrorMessage = (errors: Record<string, string>) => {
+  const fieldKeys = Object.keys(errors);
+
+  if (fieldKeys.length > 0) {
+    fieldKeys.forEach((key) => {
+      const target = $(`[name='${key}']`);
+
+      if (target?.nextElementSibling) {
+        target.nextElementSibling.innerHTML = errors[key];
+      }
+    });
+  }
 };
